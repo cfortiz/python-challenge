@@ -2,13 +2,34 @@
 Module 3 Challenge - Use the concepts you've learned to complete two Python
 challenges, PyBank and PyPoll.
 
-## Overall notes
+## Files
 
-### Similarities
+* `README.md`: This file
+* `PyBank/main.py`: script that solves the PyBank challenge requirements
+* `PyBank/Resources/budget_data.py`: CSV file with budget data (provided)
+* `PyBank/analysis/budget_data_analysis.txt`: Budget analysis text report
+* `PyPoll/main.py`: script that solves the PyBank challenge requirements
+* `PyPoll/Resources/election_data.py`: CSV file with election data (provided)
+* `PyPoll/analysis/election_data_analysis.txt`: Election analysis text report
 
-Both challenges require that we import data from a CSV file, analyze it,
-prepare a report from that analysis, and finally export that report to a text
-file and print it to standard output.
+## Instructions
+
+**From the main repo directory**, change directory to the specific challenge's
+sub-directory, and run the `main.py` script with the python interpreter.
+
+### PyBank
+```
+cd PyBank
+python main.py
+```
+
+### PyPoll
+```
+cd PyPoll
+python main.py
+```
+
+## Notes
 
 ### Dependencies and requirements
 
@@ -17,7 +38,13 @@ python 3.12 or later, since they use new features for f-string literals which
 allow nesting the same type of quotation marks inside interpolated expressions
 (see [PEP-701](https://peps.python.org/pep-0701/) for details).
 
-## PyBank
+### Challenge Similarities
+
+Both challenges require that we import data from a CSV file, analyze it,
+prepare a report from that analysis, and finally export that report to a text
+file and print it to standard output.
+
+### PyBank
 
 PyBank wants us to compute summaries on the data provided.  It wants an overall
 count of the number of months detailed in the data, as well as the total profit,
@@ -39,23 +66,7 @@ official documentation:
 > learn at school. - _excerpt from the decimal arithmetic specification_
 (see References below).
 
-### Instructions
-
-From the main repo directory, change directory to `PyBank`, then run the
-`main.py` script.
-
-```
-cd PyBank
-python main.py
-```
-
-### Files
-
-* `PyBank/main.py`: script that solves the PyBank challenge requirements
-* `PyBank/Resources/budget_data.py`: CSV file with budget data (provided)
-* `PyBank/analysis/budget_data_analysis.txt`: Text report of analysis results.
-
-## PyPoll
+### PyPoll
 
 PyPoll wants us to compute some summaries on the data provided.  While it also
 wants a count of all votes in the data, similar to PyBank wanting the count
@@ -75,22 +86,6 @@ incrementing the count.
 
 The actual report generation (analysis formatting) was simpler in this case,
 since there were fewer fields that required special consideration.
-
-### Instructions
-
-From the main repo directory, change directory to `PyPoll`, then run the
-`main.py` script.
-
-```
-cd PyPoll
-python main.py
-```
-
-### Files
-
-* `PyPoll/main.py`: script that solves the PyBank challenge requirements
-* `PyPoll/Resources/election_data.py`: CSV file with election data (provided)
-* `PyPoll/analysis/election_data_analysis.txt`: Text report of analysis results.
 
 ## References
 
