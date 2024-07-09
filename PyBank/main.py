@@ -21,8 +21,8 @@ TXT_REPORT_FILENAME = os.path.join("analysis", "budget_data_analysis.txt")
 def main():
     """Entry point for script.
     
-    While handling potential errors, it imports budget data, analyzes the data,
-    formats the analysis into a report, and then exports and prints the report.
+    It imports budget data, analyzes the data, formats the analysis into a
+    report, and then exports and prints the report.
     
     """
     budget_data = import_budget_data()
@@ -51,9 +51,7 @@ def import_budget_data(filename=None):
     # Open and read the csv file, discarding the header
     with open(filename, "r") as csv_file:
         reader = csv.reader(csv_file)
-        
-        headers = next(reader)
-        
+        headers = next(reader)  # csv data header, loaded but discarded
         budget_data = list(reader)
     
     return budget_data
@@ -181,4 +179,4 @@ def export_and_print_report(report, report_filename=None):
 
 
 if __name__ == "__main__":
-    exit(main())
+    main()

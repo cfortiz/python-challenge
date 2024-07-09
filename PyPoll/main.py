@@ -118,30 +118,21 @@ def format_analysis_report(analysis):
         
     """
     
-    # Prepare a horizontal bar as a string
+    # Prepare a horizontal bar as a string, it's used 4 times
     horizontal_bar = "-"*25
     
-    # The title of the report
-    title = "Election Results"
-    
-    # Format the lines with actual summary data
-    total_votes = f"Total Votes: {analysis["total_votes"]}"
-    candidates = [
+    # Candidate lines, generator expression (similar to list comprehension)
+    candidate_lines = (
         f"{name}: {percentage:2.3f}% ({votes})"
         for name, votes, percentage in analysis["candidate_votes"]
-    ]
-    winner = f"Winner: {analysis["winner"]}"
-
+    )
+    
     # Assemble the lines of the report in order
     report_lines = [
-        title,
-        horizontal_bar,
-        total_votes,
-        horizontal_bar,
-        *candidates,  # *candidates inserts each str in candidates in order
-        horizontal_bar,
-        winner,
-        horizontal_bar,
+        "Election Results", horizontal_bar,
+        f"Total Votes: {analysis["total_votes"]}", horizontal_bar,
+        *candidate_lines, horizontal_bar,
+        f"Winner: {analysis["winner"]}", horizontal_bar,
     ]
 
     # Join the report lines into the final report
