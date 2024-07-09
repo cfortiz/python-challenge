@@ -14,7 +14,7 @@ challenges, PyBank and PyPoll.
 
 ## Instructions
 
-**From the main repo directory**, change directory to the specific challenge's
+**From the repo's base directory**, change directory to the specific challenge's
 sub-directory, and run the `main.py` script with the python interpreter.
 
 ### PyBank

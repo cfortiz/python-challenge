@@ -12,7 +12,6 @@ import csv
 import os
 import sys
 import logging
-from decimal import Decimal  # Currency should be Decimal to avoid roundoff err
 
 
 # Logging setup constants
@@ -111,8 +110,8 @@ def analyze_budget_data(budget_data):
     # Initialize totals
     total_months = len(budget_data)
     total_changes = total_months - 1  # One fewer changes than months
-    total_profit = Decimal("0.00")
-    total_change = Decimal("0.00")
+    total_profit = 0
+    total_change = 0
     
     # No profits yet, so no last_profit
     last_profit = None
@@ -123,8 +122,8 @@ def analyze_budget_data(budget_data):
     greatest_decrease = None
     
     for month, profit in budget_data:
-        # Convert profit str into Decimal for calculations
-        profit = Decimal(profit)
+        # Convert profit str to int for calculations
+        profit = int(profit)
         
         # Accumulate profit to total
         total_profit += profit
@@ -164,7 +163,7 @@ def format_analysis_report(analysis):
     """Format the analysis into a ready to print report.
     
     Args:
-        analysis (dict[str, str|Decimal]): a mapping of summary names to
+        analysis (dict[str, object]): a mapping of summary names to
             summary values, including total_months, total (profit),
             average_change (in profits), greatest_increase (profit change),
             and greatest_decrease (in profits).
@@ -181,44 +180,27 @@ def format_analysis_report(analysis):
     average_change = f"${round(analysis["average_change"], 2)}"
     increase_month, increase_profit = analysis["greatest_increase"]
     decrease_month, decrease_profit = analysis["greatest_decrease"]
-    increase_profit = f"${round(increase_profit, 0)}"
-    decrease_profit = f"${round(decrease_profit, 0)}"
+    increase_profit = f"${increase_profit}"
+    decrease_profit = f"${decrease_profit}"
     
     # Format greatest increase and decrease data
     increase = f"{increase_month} ({increase_profit})"
     decrease = f"{decrease_month} ({decrease_profit})"
     
     # Prepare report lines
-    report_heading_lines = (
-        f"Financial Analysis",  # Report title
-        "-"*28,  # Horizontal separator (example was 28 chars wide)
+    report_lines = (
+        "Financial Analysis",  # title
+        "-"*28, # horizontal bar (example was 28 chars wide)
+        f"Total Months: {total_months}",
+        f"Total: {total}",
+        f"Average Change: {average_change}",
+        f"Greatest Increase in Profits: {increase}",
+        f"Greatest Decrease in Profits: {decrease}",
     )    
-    report_field_names = (
-        "Total Months",
-        "Total",
-        "Average Change",
-        "Greatest Increase in Profits",
-        "Greatest Decrease in Profits",
-    )    
-    report_field_values = (
-        total_months,
-        total,
-        average_change,
-        increase,
-        decrease,
-    )
-    report_field_lines = tuple(
-        f"{name}: {value}"
-        for name, value in zip(report_field_names, report_field_values)
-    )
 
     # Join heading and field lines into report
-    report = "\n".join(report_heading_lines + report_field_lines)
+    report = "\n".join(report_lines)
 
-    logger.debug(f"Report:\n{report}")
-
-    logger.info("Formatted analysis report")
-    
     return report
 
 
