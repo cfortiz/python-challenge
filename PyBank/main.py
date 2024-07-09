@@ -11,22 +11,11 @@ profit changes.
 import csv
 import os
 import sys
-import logging
 
-
-# Logging setup constants
-VERBOSE_LOGGING = True  # Set to True to enable verbose logging
-QUIET_LOGGING = True  # Set to True to disable logging
-VERBOSE_LOGGING_LEVEL = logging.INFO
-# VERBOSE_LEVEL = logging.DEBUG
-DEFAULT_LOGGING_LEVEL = logging.WARNING
 
 # Default filenames
-DEFAULT_BUDGET_DATA_CSV_FILENAME = os.path.join("Resources", "budget_data.csv")
-DEFAULT_REPORT_FILENAME = os.path.join("analysis", "budget_data_analysis.txt")
-
-# Create a logger for the script
-logger = logging.getLogger()
+CSV_DATA_FILENAME = os.path.join("Resources", "budget_data.csv")
+TXT_REPORT_FILENAME = os.path.join("analysis", "budget_data_analysis.txt")
 
 
 def main():
@@ -35,26 +24,11 @@ def main():
     While handling potential errors, it imports budget data, analyzes the data,
     formats the analysis into a report, and then exports and prints the report.
     
-    If an error occurs (an exception is raised) and it hasn't been handled
-    elsewhere, it will catch it and set the exit code to a failure condition.
-    Additionally, if logging isn't quieted, it will log the error to stderr,
-    including a stack trace.
-    
     """
-    success, failure = 0, -1
-    
-    exit_code = failure
-    try:
-        budget_data = import_budget_data()
-        analysis = analyze_budget_data(budget_data)
-        report = format_analysis_report(analysis)
-        export_and_print_report(report)
-        exit_code = success
-    except Exception as e:
-        exit_code = failure
-        logger.exception(f"An unknown error was caught by main.")
-    finally:
-        return exit_code
+    budget_data = import_budget_data()
+    analysis = analyze_budget_data(budget_data)
+    report = format_analysis_report(analysis)
+    export_and_print_report(report)
 
 
 def import_budget_data(filename=None):
@@ -62,7 +36,7 @@ def import_budget_data(filename=None):
     
     Args:
         filename (str): path of the csv file to import (default in 
-            DEFAULT_BUDGET_DATA_CSV_FILENAME)
+            CSV_DATA_FILENAME)
     
     Returns:
         A list of lists of strings.  Each inner list contains a string for the
@@ -72,22 +46,15 @@ def import_budget_data(filename=None):
     """
     # Handle default filename
     if filename is None:
-        filename = DEFAULT_BUDGET_DATA_CSV_FILENAME
-    
-    logger.info(f"Importing budget data from {filename!r}")
+        filename = CSV_DATA_FILENAME
     
     # Open and read the csv file, discarding the header
     with open(filename, "r") as csv_file:
         reader = csv.reader(csv_file)
         
         headers = next(reader)
-        logger.debug(f"{filename!r} had {headers=}")
         
         budget_data = list(reader)
-    
-        logger.debug(f"Found {len(budget_data)} data rows in {filename!r}")
-    
-    logger.info(f"Imported budget data from {filename!r}")
     
     return budget_data
 
@@ -105,8 +72,6 @@ def analyze_budget_data(budget_data):
         as the value.
         
     """
-    logger.info("Analyzing budget data")
-    
     # Initialize totals
     total_months = len(budget_data)
     total_changes = total_months - 1  # One fewer changes than months
@@ -152,10 +117,6 @@ def analyze_budget_data(budget_data):
         greatest_decrease=greatest_decrease,        
     )
     
-    logger.debug(f"{analysis=}")
-    
-    logger.info("Analyzed budget data")
-    
     return analysis
 
 
@@ -172,8 +133,6 @@ def format_analysis_report(analysis):
         A formatted report as a string.
         
     """
-    logger.info("Formatting analysis report")
-
     # Convert analysis values into strings, rounding where appropriate
     total_months = f"{analysis["total_months"]}"
     total = f"${round(analysis["total"], 0)}"
@@ -210,38 +169,16 @@ def export_and_print_report(report, report_filename=None):
     Args:
         report (str): A formatted report.
         report_filename (str|None): The str filename for the export text file.
-            If None, it will default to the constant DEFAULT_REPORT_FILENAME.
+            If None, it will default to the constant TXT_REPORT_FILENAME.
     
     """
     if report_filename is None:
-        report_filename = DEFAULT_REPORT_FILENAME
+        report_filename = TXT_REPORT_FILENAME
 
-    logger.info("Exporting and printing report")
-    
     with open(report_filename, "w", encoding="utf-8") as report_file:
         for file in (report_file, sys.stdout):
             print(report, file=file)
-    
-    logger.info("Exported and printed report")
-
-
-def init_logging(verbose=VERBOSE_LOGGING, quiet=QUIET_LOGGING):
-    """Initializes logging used for debugging during development.
-    
-    Args:
-        verbose (bool): Enables verbose logging (default VERBOSE_LOGGING)
-        quiet (bool): Disables logging altogether (default QUIET_LOGGING)
-        
-    """
-    if quiet:
-        logger.addHandler(logging.NullHandler())
-        logger.warning("This should never get logged")
-    elif verbose:
-        logging.basicConfig(level=VERBOSE_LOGGING_LEVEL)
-    else:
-        logging.basicConfig(level=logging.WARNING)
 
 
 if __name__ == "__main__":
-    init_logging()    
     exit(main())
