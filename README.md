@@ -15,7 +15,9 @@ challenges, PyBank and PyPoll.
 ## Instructions
 
 **From the repo's base directory**, change directory to the specific challenge's
-sub-directory, and run the `main.py` script with the python interpreter.
+sub-directory, and run the `main.py` script with the python interpreter.  It is
+important that the scripts be executed with python 3.12 or later (see Notes
+section for details).
 
 ### PyBank
 ```
