@@ -9,54 +9,27 @@ text file, and prints it to standard output.
 
 """
 import csv
-import logging
 import os
 import sys
 from collections import defaultdict
 
 
-# Logging setup constants
-VERBOSE_LOGGING = True  # Set to True to enable verbose logging
-QUIET_LOGGING = False  # Set to True to disable logging
-# VERBOSE_LOGGING_LEVEL = logging.INFO
-VERBOSE_LOGGING_LEVEL = logging.DEBUG
-DEFAULT_LOGGING_LEVEL = logging.WARNING
-
 # Default filenames
-DEFAULT_ELECTION_DATA_CSV_FILENAME = os.path.join("Resources", "election_data.csv")
-DEFAULT_REPORT_FILENAME = os.path.join("analysis", "election_data_analysis.txt")
-
-# Create a logger for the script
-logger = logging.getLogger()
+CSV_DATA_FILENAME = os.path.join("Resources", "election_data.csv")
+TXT_REPORT_FILENAME = os.path.join("analysis", "election_data_analysis.txt")
 
 
 def main():
     """Entry point for script.
     
-    While handling potential errors, it imports election data, analyzes the
-    data, formats the analysis into a report, and then exports and prints the
-    report.
-    
-    If an error occurs (an exception is raised) and it hasn't been handled
-    elsewhere, it will catch it and set the exit code to a failure condition.
-    Additionally, if logging isn't quieted, it will log the error to stderr,
-    including a stack trace.
+    Imports election data, analyzes the data, formats the analysis into a
+    report, and then exports and prints the report.
     
     """
-    success, failure = 0, -1
-    
-    exit_code = failure
-    try:
-        election_data = import_election_data()
-        analysis = analyze_election_data(election_data)
-        report = format_analysis_report(analysis)
-        export_and_print_report(report)
-        exit_code = success
-    except Exception as e:
-        logger.exception("An unknown error occurred")
-        exit_code = failure
-    finally:
-        return exit_code
+    election_data = import_election_data()
+    analysis = analyze_election_data(election_data)
+    report = format_analysis_report(analysis)
+    export_and_print_report(report)
 
 
 def import_election_data(filename=None):
@@ -64,7 +37,7 @@ def import_election_data(filename=None):
     
     Args:
         filename (str): path of the csv file to import (default in 
-            DEFAULT_ELECTION_DATA_CSV_FILENAME)
+            CSV_DATA_FILENAME)
     
     Returns:
         A list of lists of strings.  Each inner list contains strings for the
@@ -72,7 +45,7 @@ def import_election_data(filename=None):
         
     """
     if filename is None:
-        filename = DEFAULT_ELECTION_DATA_CSV_FILENAME
+        filename = CSV_DATA_FILENAME
     
     with open(filename, "r") as csv_file:
         reader = csv.reader(csv_file)
@@ -94,7 +67,7 @@ def analyze_election_data(election_data):
         as the value.  The summaries are the total_votes, candidate_votes, and
         winner.  The total_votes is an integer count of all votes in the
         election.  The candidate_votes is a list of tuples, each with the
-        candidate's name string, the inteeger count of votes for that candidate,
+        candidate's name string, the integer count of votes for that candidate,
         and the percentage of votes for that candidate as a float.
         
     """
@@ -183,36 +156,16 @@ def export_and_print_report(report, report_filename=None):
     Args:
         report (str): A formatted report.
         report_filename (str|None): The str filename for the export text file.
-            If None, it will default to the constant DEFAULT_REPORT_FILENAME.
+            If None, it will default to the constant TXT_REPORT_FILENAME.
     
     """
     if report_filename is None:
-        report_filename = DEFAULT_REPORT_FILENAME
+        report_filename = TXT_REPORT_FILENAME
 
     with open(report_filename, "w", encoding="utf-8") as report_file:
         for file in (report_file, sys.stdout):
             print(report, file=file)
 
 
-def init_logging(verbose=VERBOSE_LOGGING, quiet=QUIET_LOGGING):
-    """Initializes logging used for debugging during development.
-    
-    Args:
-        verbose (bool): Enables verbose logging (default VERBOSE_LOGGING)
-        quiet (bool): Disables logging altogether (default QUIET_LOGGING)
-        
-    """
-    if quiet:
-        logger.addHandler(logging.NullHandler())
-        logger.warning("This should never get logged")
-    elif verbose:
-        logging.basicConfig(level=VERBOSE_LOGGING_LEVEL)
-    else:
-        logging.basicConfig(level=logging.WARNING)
-    logging.info(f"Info level logging enabled")
-    logging.debug(f"Debug level logging enabled")
-
-
 if __name__ == "__main__":
-    init_logging()
-    exit(main())
+    main()
